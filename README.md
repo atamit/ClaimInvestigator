@@ -201,7 +201,7 @@ Installation
 
 Clone the repository:
 
-git clone <YOUR_PUBLIC_REPOSITORY_URL>
+git clone https://github.com/atamit/ClaimInvestigator.git
 cd ClaimInvestigator
 
 Create a virtual environment.
