@@ -1,0 +1,21 @@
+{
+  "claim_type": "ATM",
+  "checks": [
+    {
+      "check": "Verify ATM transaction details",
+      "tool": "get_transaction_history"
+    },
+    {
+      "check": "Check whether the customer was present at the ATM",
+      "tool": "get_transaction_history"
+    },
+    {
+      "check": "Check transaction timestamp and location",
+      "tool": "get_transaction_history"
+    },
+    {
+      "check": "Check whether the card was reported lost or stolen",
+      "tool": "get_transaction_history"
+    }
+  ]
+}

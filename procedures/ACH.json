@@ -1,0 +1,21 @@
+{
+  "claim_type": "ACH",
+  "checks": [
+    {
+      "check": "Verify ACH transaction details",
+      "tool": "get_transaction_history"
+    },
+    {
+      "check": "Check transaction originator",
+      "tool": "get_transaction_history"
+    },
+    {
+      "check": "Check customer account activity",
+      "tool": "get_transaction_history"
+    },
+    {
+      "check": "Check whether the customer authorized the transaction",
+      "tool": "check_customer_authorization"
+    }
+  ]
+}

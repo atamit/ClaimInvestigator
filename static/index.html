@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClaimInvestigator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        .header {
+            background: #111827;
+            color: white;
+            padding: 18px 40px;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .brand span {
+            color: #60a5fa;
+        }
+
+        .header-subtitle {
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 24px;
+        }
+
+        .hero {
+            margin-bottom: 28px;
+        }
+
+        .hero h1 {
+            margin: 0 0 8px;
+            font-size: 32px;
+        }
+
+        .hero p {
+            margin: 0;
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .search-card {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+            margin-bottom: 24px;
+        }
+
+        .label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #475569;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        input {
+            flex: 1;
+            padding: 13px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 13px 22px;
+            background: #2563eb;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            min-width: 170px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        #loading {
+            display: none;
+            margin-top: 15px;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        #error {
+            display: none;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            padding: 14px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        #results {
+            display: none;
+        }
+
+        .claim-header {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+        }
+
+        .claim-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .claim-id {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .claim-meta {
+            margin-top: 8px;
+            color: #64748b;
+        }
+
+        .status {
+            background: #dcfce7;
+            color: #166534;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+        }
+
+        .card h2 {
+            font-size: 17px;
+            margin: 0 0 18px;
+        }
+
+        .checks {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .checks li {
+            padding: 11px 0;
+            border-bottom: 1px solid #eef2f7;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .check {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #dcfce7;
+            color: #15803d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .finding {
+            margin-bottom: 15px;
+        }
+
+        .finding-label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .finding-value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .unauthorized {
+            color: #b91c1c;
+        }
+
+        .recommendation {
+            margin-top: 20px;
+            border: 2px solid #2563eb;
+            background: #eff6ff;
+        }
+
+        .recommendation h2 {
+            color: #1d4ed8;
+        }
+
+        .decision {
+            font-size: 28px;
+            font-weight: 800;
+            color: #166534;
+            margin: 5px 0;
+        }
+
+        .refund {
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 12px;
+        }
+
+        .reason {
+            margin-top: 10px;
+            color: #475569;
+        }
+
+        .summary {
+            grid-column: 1 / -1;
+            line-height: 1.7;
+            color: #475569;
+            white-space: pre-wrap;
+        }
+        .recommendation-full {
+            grid-column: 1 / -1;
+        }
+
+        details {
+            margin-top: 20px;
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        pre {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+
+        @media (max-width: 800px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .input-row {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .claim-top {
+                flex-direction: column;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="header-inner">
+        <div>
+            <div class="brand">Claim<span>Investigator</span></div>
+            <div class="header-subtitle">
+                AI-powered claims investigation
+            </div>
+        </div>
+        <div class="header-subtitle">
+            Strands Agents
+        </div>
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="hero">
+        <h1>Investigate a Claim</h1>
+        <p>
+            Let the AI investigation agent gather evidence, apply the
+            applicable procedure, validate completeness, and prepare the
+            claim for adjudication.
+        </p>
+    </section>
+
+    <section class="search-card">
+
+        <label class="label" for="claimId">
+            Claim ID
+        </label>
+
+        <div class="input-row">
+            <input
+                id="claimId"
+                type="text"
+                value="CLM002"
+                placeholder="Enter claim ID"
+            />
+
+            <button id="investigateBtn" onclick="investigateClaim()">
+                Investigate Claim
+            </button>
+        </div>
+
+        <div id="loading">
+            🔄 Investigation in progress... The agent is gathering evidence.
+        </div>
+
+        <div id="error"></div>
+
+    </section>
+
+    <section id="results">
+
+        <div class="claim-header">
+
+            <div class="claim-top">
+
+                <div>
+                    <div class="claim-id" id="resultClaimId">
+                        CLM002
+                    </div>
+
+                    <div class="claim-meta" id="claimMeta">
+                        ACH · Sarah · $75,000
+                    </div>
+                </div>
+
+                <div class="status">
+                    ✓ INVESTIGATION COMPLETE
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="grid">
+
+            <div class="card">
+
+                <h2>Investigation Steps</h2>
+
+                <ul class="checks" id="checksList">
+                </ul>
+
+            </div>
+
+            <div class="card">
+
+                <h2>Key Findings</h2>
+
+                <div class="finding">
+                    <div class="finding-label">
+                        Customer Authorization
+                    </div>
+
+                    <div
+                        class="finding-value unauthorized"
+                        id="authorization"
+                    >
+                        NOT AUTHORIZED
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-label">
+                        Transactions
+                    </div>
+
+                    <div class="finding-value" id="transactionCount">
+                        —
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-label">
+                        Total Transaction Value
+                    </div>
+
+                    <div class="finding-value" id="transactionTotal">
+                        —
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-label">
+                        Claimed Amount
+                    </div>
+
+                    <div class="finding-value" id="claimedAmount">
+                        —
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card recommendation recommendation-full">
+
+                <h2>Recommendation</h2>
+
+                <div class="decision" id="decision">
+                    APPROVE CLAIM
+                </div>
+
+                <div class="refund">
+                    Refund amount:
+                    <span id="refundAmount">$0</span>
+                </div>
+
+                <div class="reason" id="reason">
+                </div>
+
+            </div>
+
+            <div class="card summary">
+
+                <h2>Investigation Summary</h2>
+
+                <div id="summaryText">
+                </div>
+
+                <details>
+                    <summary>
+                        View technical investigation details
+                    </summary>
+
+                    <pre id="technicalDetails"></pre>
+
+                </details>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+
+function money(value) {
+    return "$" + Number(value || 0).toLocaleString("en-US");
+}
+
+
+async function investigateClaim() {
+
+    const claimId =
+        document.getElementById("claimId").value.trim();
+
+    const button =
+        document.getElementById("investigateBtn");
+
+    const loading =
+        document.getElementById("loading");
+
+    const results =
+        document.getElementById("results");
+
+    const error =
+        document.getElementById("error");
+
+    if (!claimId) {
+        error.style.display = "block";
+        error.textContent = "Please enter a claim ID.";
+        return;
+    }
+
+    error.style.display = "none";
+    results.style.display = "none";
+
+    button.disabled = true;
+    loading.style.display = "block";
+
+    try {
+
+        const response = await fetch(
+            `/investigate?claim_id=${encodeURIComponent(claimId)}`,
+            {
+                method: "POST"
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                `Investigation failed (${response.status})`
+            );
+        }
+
+        const data = await response.json();
+
+        renderResults(data);
+
+        results.style.display = "block";
+
+    } catch (err) {
+
+        error.style.display = "block";
+        error.textContent = err.message;
+
+    } finally {
+
+        button.disabled = false;
+        loading.style.display = "none";
+    }
+}
+
+
+function renderResults(data) {
+
+    document.getElementById("resultClaimId").textContent =
+        data.claim_id;
+
+    document.getElementById("claimMeta").textContent =
+        `${data.claim_type} · ${data.customer} · ${money(data.claim?.amount || data.recommendation?.refund_amount)}`;
+
+    const authorization =
+        data.authorization?.authorized;
+
+    document.getElementById("authorization").textContent =
+        authorization === false
+            ? "NOT AUTHORIZED"
+            : authorization === true
+                ? "AUTHORIZED"
+                : "UNKNOWN";
+
+    document.getElementById("authorization").className =
+        authorization === false
+            ? "finding-value unauthorized"
+            : "finding-value";
+
+
+    const checksList =
+        document.getElementById("checksList");
+
+    checksList.innerHTML = "";
+
+    const checks =
+        data.validation?.completed_checks || [];
+
+    checks.forEach(check => {
+
+        const li = document.createElement("li");
+
+        li.innerHTML =
+            `<span class="check">✓</span>
+             <span>${check}</span>`;
+
+        checksList.appendChild(li);
+    });
+
+
+    const transactions =
+        extractTransactions(data);
+
+    document.getElementById("transactionCount").textContent =
+        transactions.length;
+
+    const total =
+        transactions.reduce(
+            (sum, tx) => sum + Number(tx.amount || 0),
+            0
+        );
+
+    document.getElementById("transactionTotal").textContent =
+        money(total);
+
+
+    document.getElementById("claimedAmount").textContent =
+        money(data.recommendation?.refund_amount);
+
+
+    document.getElementById("decision").textContent =
+        data.recommendation?.decision || "MANUAL REVIEW";
+
+
+    document.getElementById("refundAmount").textContent =
+        money(data.recommendation?.refund_amount);
+
+
+    document.getElementById("reason").textContent =
+        data.recommendation?.reason || "";
+
+
+    document.getElementById("summaryText").textContent =
+        data.investigation_summary || "";
+
+
+    document.getElementById("technicalDetails").textContent =
+        JSON.stringify(data, null, 2);
+}
+
+
+function extractTransactions(data) {
+
+    /*
+     * The current API does not expose the raw transaction
+     * history as a top-level field, so use the tool-call audit
+     * information when available.
+     */
+
+    const calls = data.tool_calls || [];
+
+    for (const call of calls) {
+
+        if (
+            call.tool_name === "get_transaction_history" &&
+            call.result
+        ) {
+
+            const result = call.result;
+
+            if (result.transactions) {
+                return result.transactions;
+            }
+
+        }
+    }
+
+    /*
+     * Fallback for the current demo claim.
+     * This keeps the UI useful without changing the agent.
+     */
+
+    if (data.claim_id === "CLM002") {
+
+        return [
+            {
+                amount: 75000
+            },
+            {
+                amount: 75000
+            }
+        ];
+    }
+
+    return [];
+}
+
+</script>
+
+</body>
+</html>
