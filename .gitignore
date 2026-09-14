@@ -2,3 +2,5 @@
 .venv/
 __pycache__/
 *.pyc
+agentcore_package/deployment_package/
+agentcore_package/*.zip

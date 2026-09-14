@@ -1,8 +1,5 @@
 strands-agents
-strands-agents-tools
+
 anthropic==0.125.0
 boto3==1.43.92
-python-dotenv
-fastapi
-uvicorn[standard]
 bedrock-agentcore
